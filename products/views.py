@@ -10,4 +10,7 @@ def index(request):
 
 
 def products(request):
+    context = {
+        'title': 'Store - Каталог'
+    }
     return render(request, 'products/products.html')
