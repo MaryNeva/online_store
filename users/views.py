@@ -1,11 +1,11 @@
 from pyexpat.errors import messages
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponseRedirect
 from users.models import User
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from django.contrib import auth
 from django.urls import reverse
-
+from products.models import Basket
 
 def login(request):
     if request.method == 'POST':
@@ -28,7 +28,7 @@ def registration(request):
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Поздравляем! Вы успешно зарегестрировались!")
+            messages.success(request, "Вы успешно зарегестрировались!")
             return HttpResponseRedirect(reverse('users:login'))
     else:
         form = UserRegistrationForm()
@@ -36,6 +36,7 @@ def registration(request):
     return render(request, 'users/registration.html', context)
 
 
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(instance=request.user, data=request.POST, files=request.FILES)
@@ -46,7 +47,13 @@ def profile(request):
             print('form.errors')
     else:
         form = UserProfileForm(instance=request.user)
-    context = {'title': 'Store - Профиль', 'form': form}
+
+    baskets = Basket.objects.filter(user=request.user)
+
+    context = {'title': 'Store - Профиль',
+               'form': form,
+               'baskets': Basket.objects.all(),
+               }
     return render(request, 'users/profile.html', context)
 
 
