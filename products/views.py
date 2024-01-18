@@ -4,7 +4,6 @@ from django.shortcuts import render
 from django.views.generic import TemplateView, CreateView
 from django.views.generic.list import ListView
 from products.models import Product, ProductCategory, Basket
-from users.models import User
 
 from django.contrib.auth.decorators import login_required
 
