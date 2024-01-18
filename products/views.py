@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
-
 class IndexView(TemplateView):
     template_name = 'products/index.html'
 
