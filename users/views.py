@@ -12,7 +12,7 @@ class UserLoginView(LoginView):
     form_class = UserLoginForm
 
 
-class UserRegistrationView(SuccessMessageMixin, CreateView):
+class UserRegistrationView(SuccessMessageMixin, CreateView):  # страница регистрации
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/registration.html'
@@ -25,7 +25,7 @@ class UserRegistrationView(SuccessMessageMixin, CreateView):
         return context
 
 
-class UserProfileView(UpdateView):
+class UserProfileView(UpdateView):  #формируем профиль пользователя
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile.html'
@@ -38,3 +38,4 @@ class UserProfileView(UpdateView):
         context['title'] = 'Store - Личный кабинет'
         context['baskets'] = Basket.objects.filter(user=self.request.user)
         return context
+
