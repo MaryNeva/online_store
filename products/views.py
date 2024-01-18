@@ -8,10 +8,9 @@ from products.models import Product, ProductCategory, Basket
 from django.contrib.auth.decorators import login_required
 
 
-
 # Create your views here.
 
-class IndexView(TemplateView):
+class IndexView(TemplateView):  # start page
     template_name = 'products/index.html'
 
     def get_context_data(self, **kwargs):
@@ -20,7 +19,7 @@ class IndexView(TemplateView):
         return context
 
 
-class ProductsListView(ListView):
+class ProductsListView(ListView):  # list products (catalog) on start page
     model = Product
     template_name = 'products/products.html'
     paginate_by = 3
