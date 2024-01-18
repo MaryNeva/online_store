@@ -8,6 +8,7 @@ from products.models import Product, ProductCategory, Basket
 from django.contrib.auth.decorators import login_required
 
 
+
 # Create your views here.
 
 class IndexView(TemplateView):
