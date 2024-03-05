@@ -11,19 +11,43 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool),
+    SECRET_KEY=(str),
+    DOMAIN_NAME=(str),
+
+    REDIS_HOST=(str),
+    REDIS_PORT=(str),
+
+    DATABASES_NAME=(str),
+    DATABASES_USER=(str),
+    DATABASES_PASSWORD=(str),
+    DATABASES_HOST=(str),
+    DATABASES_PORT=(str),
+
+    STRIPE_PUBLIC_KEY=(str),
+    STRIPE_SECRET_KEY=(str),
+
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(BASE_DIR/ '.env')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%)1k1pf*1s4iksj!^w9*+fpc4&)6@weys9rc@80sr0sd67nk6$'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -45,6 +69,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
 
     'debug_toolbar',
+    'django_extensions',
 
     'products',
     'orders',
@@ -91,11 +116,15 @@ INTERNAL_IPS = [
     'localhost'
 ]
 
+#Redis
+
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -115,11 +144,11 @@ CACHES = {
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "store_db",
-        "USER": "store_username",
-        "PASSWORD": "store_password",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": env('DATABASES_NAME'),
+        "USER": env('DATABASES_USER'),
+        "PASSWORD": env('DATABASES_PASSWORD'),
+        "HOST": env('DATABASES_HOST'),
+        "PORT": env('DATABASES_PORT'),
     }
 }
 
@@ -178,7 +207,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DOMAIN_NAME = 'http://localhost:8000'
+DOMAIN_NAME = env('DOMAIN_NAME')
 
 
 #OAuth
@@ -208,5 +237,11 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+
+
+#Stripe
+
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
